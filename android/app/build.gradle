@@ -77,6 +77,16 @@ def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInRelea
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+project.ext.envConfigFiles = [
+    developmentdebug: "env/.env.development",
+    developmentrelease: "env/.env.development",
+    productiondebug: "env/.env.production",
+    productionrelease: "env/.env.production",
+    anothercustombuild: ".env"
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -90,6 +100,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        resValue "string", "build_config_package", applicationId
     }
     signingConfigs {
         debug {
@@ -110,6 +122,22 @@ android {
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        developmentdebug {
+            initWith debug
+            applicationIdSuffix ".development"
+            matchingFallbacks = ["debug"]
+        }
+        productionrelease {
+            initWith release
+            matchingFallbacks = ["release"]
+        }
+    }
+    flavorDimensions.add("version")
+    productFlavors {
+        development {
+        }
+        production {
         }
     }
     packagingOptions {

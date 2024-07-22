@@ -1,14 +1,16 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import Config from "react-native-config";
 
-console.log(Config.VERSION);
-
 export default function App() {
+  useEffect(() => {
+    console.log(Platform.OS, Config.VERSION);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text>Hello World!</Text>
+      <Text>{Config.VERSION}</Text>
       <StatusBar style="auto" />
     </View>
   );
